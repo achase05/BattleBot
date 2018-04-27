@@ -17,11 +17,11 @@ public class Player {
 		this.mHealth = playerHealth;
 	}
 
-	public User getPlayerName() {
+	public User getPlayer() {
 		return this.mPlayer;
 	}
 
-	public void setPlayerName(User newPlayerName) {
+	public void setPlayer(User newPlayerName) {
 		this.mPlayer = newPlayerName;
 	}
 
@@ -52,7 +52,20 @@ public class Player {
 	public void openChest(MessageChannel chnl) {
 		Item item = new Item("Dagger", 10);
 		this.addItemToInv(item);
-		chnl.sendMessage(this.mPlayer.getAsMention() + ", you opened a chest and found a " + item.getName()).queue();
+		chnl.sendMessage(this.mPlayer.getAsMention() + ", you opened a chest and found a " + item.getName() + "!").queue();
+	}
+	
+	public void use(String itemName, Player tgtPlayer, MessageChannel chnl) {
+		for(int i = 0; i <= this.mInventory.size(); i++) {
+			if(mInventory.get(i).getName() == itemName) {
+				float newHealth = tgtPlayer.getHealth() - mInventory.get(i).getDamage();
+				tgtPlayer.setHealth(newHealth);
+				chnl.sendMessage(this.mPlayer.getAsMention() + ", you attacked " + tgtPlayer.getPlayer().getAsMention() 
+						+ "with a " + itemName + ". You dealt " + mInventory.get(i).getDamage() + ". " + tgtPlayer.getPlayer().getAsMention() 
+						+ " has " + tgtPlayer.getHealth() + " remaining.");
+				this.mInventory.remove(i);
+			}
+		}
 	}
 	
 	

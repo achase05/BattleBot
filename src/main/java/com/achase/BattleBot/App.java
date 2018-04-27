@@ -39,6 +39,9 @@ public class App extends ListenerAdapter
     	MessageChannel objMsgCh = evt.getChannel();
     	Message objMsg = evt.getMessage();
     	
+    	// TODO: Get message string and search for first instance of "!". Then, collect all chars up to the
+    	//		 next whitespace. Use that collection of chars as the command word.
+    	
     	// Commands
     	if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"BattleBegin")) {
     		Player newPlayer = new Player(objUsr, 100);
@@ -53,13 +56,22 @@ public class App extends ListenerAdapter
     			// Instead of adding player names, just add players
     			playerNames.add(objUsr.getName());
 	    		players.add(newPlayer);
-	    		objMsgCh.sendMessage("Welcome to the game, " + newPlayer.getPlayerName().getAsMention() + "!").queue();
+	    		objMsgCh.sendMessage("Welcome to the game, " + newPlayer.getPlayer().getAsMention() + "!").queue();
     		}
     		
     	} else if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"Open") && playerNames.contains(objUsr.getName())) {
     		int playerIndex = playerNames.indexOf(objUsr.getName());
     		players.get(playerIndex).openChest(objMsgCh);
     		System.out.println(players.get(playerIndex).mInventory);
+    		
+    	// For now, this command MUST be typed as !use (all lower case), but will fix casing issue soon
+    	// Also it doesn't take into account any words that come BEFORE !use yet
+    	} else if (objMsg.getContentRaw().contains(Ref.prefix+"use") && playerNames.contains(objUsr.getName())) {
+    		String msg = objMsg.getContentRaw();
+    		String[] words = msg.split("\\s+");
+    		int playerIndex = playerNames.indexOf(objUsr.getName());
+    		int tgtIndex = playerNames.indexOf(words[2]);
+    		players.get(playerIndex).use(words[1], players.get(tgtIndex), objMsgCh);
     	}
     }
 }
