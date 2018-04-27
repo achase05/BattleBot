@@ -23,7 +23,9 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
  */
 public class App extends ListenerAdapter
 {
-	List<String> players = new ArrayList<String>();
+	List<String> playerNames = new ArrayList<String>();
+	List<Player> players = new ArrayList<Player>(); 
+	
     public static void main( String[] args ) throws Exception
     {
         JDA jda = new JDABuilder(AccountType.BOT).setToken(Ref.token).buildBlocking();
@@ -38,21 +40,26 @@ public class App extends ListenerAdapter
     	Message objMsg = evt.getMessage();
     	
     	// Commands
-    	if(objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"tic")) {
-    		objMsgCh.sendMessage(objUsr.getAsMention() + "Tac!").queue();
-    	} else if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"BattleBegin")) {
-    		
+    	if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"BattleBegin")) {
     		Player newPlayer = new Player(objUsr, 100);
     		System.out.println("New Player: " + newPlayer);
     		
-    		if(players.contains(newPlayer.retrievePlayerName()) == true) {
+    		// TODO: Instead of adding users names to a separate list, just add the players to a players list and compare with
+    		//		 User.getName() on each player in the list
+    		if(playerNames.contains(newPlayer.retrievePlayerName()) == true) {
     			objMsgCh.sendMessage(objUsr.getAsMention() + ", you're already playing!").queue();
     		} else {
-    			System.out.println("Existing players: " + players);
-	    		players.add(newPlayer.retrievePlayerName());
+    			System.out.println("Existing players: " + playerNames);
+    			// Instead of adding player names, just add players
+    			playerNames.add(objUsr.getName());
+	    		players.add(newPlayer);
 	    		objMsgCh.sendMessage("Welcome to the game, " + newPlayer.getPlayerName().getAsMention() + "!").queue();
     		}
     		
+    	} else if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"Open") && playerNames.contains(objUsr.getName())) {
+    		int playerIndex = playerNames.indexOf(objUsr.getName());
+    		players.get(playerIndex).openChest(objMsgCh);
+    		System.out.println(players.get(playerIndex).mInventory);
     	}
     }
 }
