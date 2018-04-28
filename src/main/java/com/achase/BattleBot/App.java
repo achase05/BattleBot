@@ -45,14 +45,13 @@ public class App extends ListenerAdapter
     	// Commands
     	if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"BattleBegin")) {
     		Player newPlayer = new Player(objUsr, 100);
-    		System.out.println("New Player: " + newPlayer);
     		
     		// TODO: Instead of adding users names to a separate list, just add the players to a players list and compare with
     		//		 User.getName() on each player in the list
     		if(playerNames.contains(newPlayer.retrievePlayerName()) == true) {
     			objMsgCh.sendMessage(objUsr.getAsMention() + ", you're already playing!").queue();
     		} else {
-    			System.out.println("Existing players: " + playerNames);
+    			
     			// Instead of adding player names, just add players
     			playerNames.add(objUsr.getName());
 	    		players.add(newPlayer);
@@ -62,7 +61,6 @@ public class App extends ListenerAdapter
     	} else if (objMsg.getContentRaw().equalsIgnoreCase(Ref.prefix+"Open") && playerNames.contains(objUsr.getName())) {
     		int playerIndex = playerNames.indexOf(objUsr.getName());
     		players.get(playerIndex).openChest(objMsgCh);
-    		System.out.println(players.get(playerIndex).mInventory);
     		
     	// For now, this command MUST be typed as !use (all lower case), but will fix casing issue soon
     	// Also it doesn't take into account any words that come BEFORE !use yet

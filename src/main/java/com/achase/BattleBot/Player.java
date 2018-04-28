@@ -7,7 +7,7 @@ import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
 
 public class Player {
-	private static User mPlayer;
+	private User mPlayer;
 	private float mHealth;
 	public List<Item> mInventory = new ArrayList<Item>();
 	
@@ -45,7 +45,7 @@ public class Player {
 		return this.mPlayer.getName();
 	}
 	
-	public void addItemToInv(Item item ) {
+	public void addItemToInv(Item item) {
 		this.mInventory.add(item);
 	}
 	
@@ -56,17 +56,17 @@ public class Player {
 	}
 	
 	public void use(String itemName, Player tgtPlayer, MessageChannel chnl) {
-		for(int i = 0; i <= this.mInventory.size(); i++) {
-			if(mInventory.get(i).getName() == itemName) {
+		System.out.println(this.mInventory);
+		for(int i = 0; i < this.mInventory.size(); i++) {
+			System.out.println(this.mInventory.get(i).getName());
+			if(this.mInventory.get(i).getName() == itemName) {
+				System.out.println("Test");
 				float newHealth = tgtPlayer.getHealth() - mInventory.get(i).getDamage();
 				tgtPlayer.setHealth(newHealth);
 				chnl.sendMessage(this.mPlayer.getAsMention() + ", you attacked " + tgtPlayer.getPlayer().getAsMention() 
-						+ "with a " + itemName + ". You dealt " + mInventory.get(i).getDamage() + ". " + tgtPlayer.getPlayer().getAsMention() 
-						+ " has " + tgtPlayer.getHealth() + " remaining.");
-				this.mInventory.remove(i);
+						+ " with a " + itemName + ". You dealt " + mInventory.get(i).getDamage() + " damage. " + tgtPlayer.getPlayer().getAsMention() 
+						+ " has " + tgtPlayer.getHealth() + " health remaining.").queue();
 			}
 		}
 	}
-	
-	
 }
